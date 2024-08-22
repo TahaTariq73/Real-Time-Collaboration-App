@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middlewares/error");
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
 
@@ -53,6 +54,17 @@ app.use("/api/v1", require("./routes/chatRoute"));
 app.use('/uploads/images-videos', express.static('uploads/images-videos'));
 app.use('/uploads/audio', express.static('uploads/audio'));
 app.use('/uploads/profile-pics', express.static('uploads/profile-pics'));
+
+
+// <------- Serve static files from the dist directory ------->
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// <------- Serve the index.html for all routes (for SPA routing) ------->
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+})
 
 app.use(errorMiddleware);
 
